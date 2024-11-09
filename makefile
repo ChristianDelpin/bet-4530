@@ -1,20 +1,25 @@
-# Compiler
+# Compiler and flags
 CXX = g++
-
-# Compiler flags
-CXXFLAGS = -Wall -std=c++11
+CXXFLAGS = -std=c++11 -Wall -g
 
 # Target executable
-TARGET = proj4.x
+TARGET = proj4
 
-# Source and header files
-SOURCES = proj4_driver.cpp
-HEADERS = bet.h bet.hpp
+# Source files and objects
+SRCS = proj4_driver.cpp
+OBJS = proj4_driver.o
 
-# Build target
-$(TARGET): $(SOURCES) $(HEADERS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES)
+# Default target
+all: $(TARGET)
 
-# Clean target
+# Rule to build the target executable
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+
+# Compile the main driver file
+proj4_driver.o: proj4_driver.cpp bet.hpp bet.h
+	$(CXX) $(CXXFLAGS) -c proj4_driver.cpp
+
+# Clean up build files
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(OBJS)
