@@ -40,27 +40,37 @@ bool BET::buildFromPostfix(const std::string postfix)
 
     while (iss >> token) 
     {
-        if (isdigit(token[0])) 
-        {  // Operand
+        if (isdigit(token[0]) || isalpha(token[0])) 
             nodeStack.push(new BinaryNode(token));
-        } 
-        else 
-        {  // Operator
+
+        else if (token == "+" || token == "-" || token == "*" || token == "/") 
+        {
             if (nodeStack.size() < 2) 
+            {
+                std::cerr << "Error: Invalid postfix expression (not enough operands for operator '" << token << "')." << std::endl;
                 return false;
-            
-            BinaryNode* right = nodeStack.top(); 
-            nodeStack.pop();
-            
-            BinaryNode* left = nodeStack.top(); 
-            nodeStack.pop();
-            
+            }
+
+            BinaryNode* right = nodeStack.top(); nodeStack.pop();
+            BinaryNode* left = nodeStack.top(); nodeStack.pop();
+
+            // Create a new node with the operator and push it onto the stack
             nodeStack.push(new BinaryNode(token, left, right));
+        } 
+        // Invalid token
+        else {
+            std::cerr << "Error: Invalid token '" << token << "' in postfix expression." << std::endl;
+            return false;
         }
     }
-    if (nodeStack.size() != 1) 
+
+    // After processing all tokens, there should be exactly *one* element on the stack
+    if (nodeStack.size() != 1) {
+        std::cerr << "Error: Invalid postfix expression (too many operands or missing operators)." << std::endl;
         return false;
-    
+    }
+
+    // Set the root of the tree to the last remaining element on the stack
     root = nodeStack.top();
     return true;
 }
@@ -74,6 +84,7 @@ void BET::printInfixExpression()
 void BET::printPostfixExpression()
 {
     printPostfixExpression(root);
+    std::cout << std::endl;
 }
 
 size_t BET::size()
@@ -125,26 +136,19 @@ void BET::makeEmpty(BinaryNode*& n)
 
 BET::BinaryNode* BET::clone(BinaryNode* t) const
 {
-    if(t==nullptr)
+    if(t == nullptr)
         return nullptr;
     return new BinaryNode(t->element, clone(t->left), clone(t->right));
 }
 
 void BET::printPostfixExpression(BinaryNode* n)
 {
-    if(n != nullptr)
+    if (n != nullptr) 
     {
-        bool isOper = (n->element == "+" || n->element == "-" || n->element == "*" || n->element == "/");
-
-        if(isOper && n->left && n->right)
-            std::cout << "(";
-
-        printInfixExpression(n->left);
-        std::cout << n->element;
-        printInfixExpression(n->right);
-
-        if(isOper && n->left && n->right)
-            std::cout << ")";
+        // Postorder traversal: left, right, root
+        printPostfixExpression(n->left);
+        printPostfixExpression(n->right);
+        std::cout << n->element << " ";
     }
 }
 
