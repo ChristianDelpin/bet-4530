@@ -13,6 +13,7 @@ int main() {
 
     // create a binary expression tree
     BET bet1(postfix);
+//cout << "bet1(postfix) success." << endl;
     if (!bet1.empty()) {
     	cout << "Infix expression: ";
     	bet1.printInfixExpression();

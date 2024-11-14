@@ -10,8 +10,9 @@
 
 BET::BET() : root(nullptr) {}
 
-BET::BET(const std::string postfix)
+BET::BET(const std::string postfix) : root(nullptr)
 {
+//std::cout << "Inside BET(postfix)" << std::endl;
     buildFromPostfix(postfix);
 }
 
@@ -32,20 +33,21 @@ bool BET::empty()
 
 bool BET::buildFromPostfix(const std::string postfix)
 {
+//std::cout << "inside buildFromPostfix()" << std::endl;
     std::istringstream iss(postfix);
     std::stack<BinaryNode*> nodeStack;
     std::string token;
 
     makeEmpty(root);  // Clear the existing tree
 
-    while (iss >> token) 
+    while (iss >> token)
     {
-        if (isdigit(token[0]) || isalpha(token[0])) 
+        if (isdigit(token[0]) || isalpha(token[0]))
             nodeStack.push(new BinaryNode(token));
 
-        else if (token == "+" || token == "-" || token == "*" || token == "/") 
+        else if (token == "+" || token == "-" || token == "*" || token == "/")
         {
-            if (nodeStack.size() < 2) 
+            if (nodeStack.size() < 2)
             {
                 std::cerr << "Error: Invalid postfix expression (not enough operands for operator '" << token << "')." << std::endl;
                 return false;
@@ -107,30 +109,38 @@ const BET& BET::operator=(const BET& b)
     return *this;
 }
 
-void BET::printInfixExpression(BinaryNode* n) 
+void BET::printInfixExpression(BinaryNode* n)
 {
-    if (n != nullptr) 
+    if (n != nullptr)
     {
-        if (n->left && n->right) 
+        if (n->left && n->right)
             std::cout << "(";
-        
+	
         printInfixExpression(n->left);
         std::cout << " " << n->element << " ";
         printInfixExpression(n->right);
         
-        if (n->left && n->right) 
+        if (n->left && n->right)
             std::cout << ")";
     }
 }
 
 void BET::makeEmpty(BinaryNode*& n)
 {
+//std::cout << "inside makeEmpty()" << std::endl;
+
+//std::cout << "root == nullptr: " << (root==nullptr) << std::endl;
     if(n != nullptr)
     {
+//std::cout << "beginning makeEmpty(n->left)" << std::endl;
         makeEmpty(n->left);
+//std::cout << "beginning makeEmpty(N->RIGHT)" << std::endl;
         makeEmpty(n->right);
+//std::cout << "deleting n..." << std::endl;
         delete n;
+//std::cout << "delete n successful" << std::endl;
         n = nullptr;
+//std::cout << "n = nullptr success" << std::endl;
     }
 }
 
@@ -143,7 +153,7 @@ BET::BinaryNode* BET::clone(BinaryNode* t) const
 
 void BET::printPostfixExpression(BinaryNode* n)
 {
-    if (n != nullptr) 
+    if (n != nullptr)
     {
         // Postorder traversal: left, right, root
         printPostfixExpression(n->left);
