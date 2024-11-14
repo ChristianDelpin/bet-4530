@@ -1,0 +1,18 @@
+1. makeEmpty() time complexity:
+
+The complexity of makeEmpty() is O(n) where n is the # of nodes in the tree.
+Since it must delete every node, it must traverse the entire tree to clear
+itself.
+
+2. Postfix to infix expression
+
+The complexity of buildFromPostfix() is O(n) where n is the number of nodes.
+The building of the BET must go through each token and push onto the stack if
+it's an operand, and pop 2 off if it's an operator, and creates a new node.
+
+Since that function does not convert to infix, but printInfixExpression() does, 
+we must add O(n) from buildFromPostfix() to O(n) from printInfixExpression(),
+resulting in O(n)+O(n) = O(2n) but since constants are dropped, O(n) is the 
+complexity of printInfixExpression() because of the same reason; n is the number
+of tokens/nodes within the postfix expression that is passed into 
+printInfixExpression().

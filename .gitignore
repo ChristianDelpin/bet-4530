@@ -33,3 +33,5 @@
 
 #others
 .vscode
+proj4
+*.tar
